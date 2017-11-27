@@ -18,7 +18,7 @@ class Client:
         self.__showConnexionMenu()
 
     def __showConnexionMenu(self):
-        choice = input("Menu de connexion \n 1. Se connecter \n 2. Creer un compte \n")
+        choice = input("\nMenu de connexion \n 1. Se connecter \n 2. Creer un compte \n")
 
         if choice == 1 or choice == str(1):
             self.__connexionToServer()
@@ -31,7 +31,7 @@ class Client:
             self.__showConnexionMenu()
 
     def __connexionToServer(self):
-        self.username = input("Entrez votre nom d'usager: ")
+        self.username = input("\nEntrez votre nom d'usager: ")
         self.password = getpass.getpass("Entrez votre mot de passe: ")
 
         send_msg(self.s, str(1))
@@ -60,7 +60,7 @@ class Client:
 
 
     def __createUser(self):
-        self.username = input("Entrez le nom d'usager voulu: ")
+        self.username = input("\nEntrez le nom d'usager voulu: ")
         self.__createPassword()
 
     def __createPassword(self):
@@ -93,7 +93,7 @@ class Client:
 
 
     def __showMainMenu(self):
-        print("Bienvenue: " + self.username)
+        print("\nBienvenue: " + self.username)
         choice = input("Menu principal \n 1. Envoie de courriel \n 2. Consultation de courriels \n "
                        "3. Statistiques \n 4. Quitter \n")
 
@@ -127,12 +127,17 @@ class Client:
 
         try:
             message = recv_msg(self.s)
-            print(message)
+            if message == "mailOk":
+                print("Message envoyee!")
+            elif message == "noDest":
+                print("Destinataire non existant!")
+            elif message == "otherDest":
+                print("Message envoyee a un destinataire exterieur!")
         except Exception as ex:
             print(ex)
 
     def __destOk(self):
-        dest = input("Entrez le destinataire: ")
+        dest = input("\nEntrez le destinataire: ")
         if re.search(r"[^@]+@[^@]+\.[^@]", dest):
             return dest
         else:
@@ -144,7 +149,7 @@ class Client:
         send_msg(self.s, self.username)
         try:
             subjects = recv_msg(self.s)
-            print(subjects)
+            print("\n" + subjects)
             wantedMessageNo = input("Entrez le numero du message que vous voulez ouvrir: ")
             send_msg(self.s, wantedMessageNo)
             confirmation = recv_msg(self.s)
@@ -153,9 +158,10 @@ class Client:
                 subject, extension = subject.split(".")
                 message = recv_msg(self.s)
                 print("\nSujet: " + subject)
-                print(message + "\n")
+                print(message)
             elif confirmation == "noMessage":
                 print("Entrez un numero de sujet valide")
+                self.__showMails()
             else:
                 print("Erreur niveau serveur")
         except Exception as ex:
@@ -171,7 +177,7 @@ class Client:
             messageList = recv_msg(self.s)
             print("\nNombre de message: " + nbrMessage)
             print("Taille du dossier: " + size)
-            print("Liste de messages:\n" + messageList + "\n")
+            print("Liste de messages:\n" + messageList)
 
         except Exception as ex:
             print("Erreur niveau serveur")
