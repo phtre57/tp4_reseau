@@ -185,23 +185,28 @@ class Server:
         if len(subjectList) == 0:
             send_msg(s, "messageEmpty")
         else:
+            send_msg(s, str(len(subjectList)))
             send_msg(s, subjectsString)
             try:
-                wantedMessageNo = recv_msg(s)
-                wantedMessageNo = int(wantedMessageNo) - 1
-                subjectWanted = subjectList[wantedMessageNo]
-                filenameWanted = "./" + username + "/" + subjectWanted
-                if os.path.exists(filenameWanted):
-                    try:
-                        with open(filenameWanted, "r") as file:
-                            message = file.readline()
-                            send_msg(s, "messageOk")
-                            send_msg(s, subjectWanted)
-                            send_msg(s, message)
+                confirmation = recv_msg(s)
+                if confirmation == "consulting":
+                    wantedMessageNo = recv_msg(s)
+                    wantedMessageNo = int(wantedMessageNo) - 1
+                    subjectWanted = subjectList[wantedMessageNo]
+                    filenameWanted = "./" + username + "/" + subjectWanted
+                    if os.path.exists(filenameWanted):
+                        try:
+                            with open(filenameWanted, "r") as file:
+                                message = file.readline()
+                                send_msg(s, "messageOk")
+                                send_msg(s, subjectWanted)
+                                send_msg(s, message)
 
-                    except OSError as ex:
-                        if ex.errno != errno.EEXIST:
-                            send_msg(s, "race condition")
+                        except OSError as ex:
+                            if ex.errno != errno.EEXIST:
+                                send_msg(s, "race condition")
+                else:
+                    print("client quit consulting emails")
 
             except Exception as iEx:
                 send_msg(s, "noMessage")

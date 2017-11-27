@@ -167,25 +167,31 @@ class Client:
         send_msg(self.s, str(4))
         send_msg(self.s, self.username)
         try:
+            length = int(recv_msg(self.s)) + 1
             subjects = recv_msg(self.s)
             if subjects == "messageEmpty":
                 print("\nAucuns messages recus")
             else:
-                print("\n" + subjects)
+                print("\n" + subjects + str(length) + ".Quitter")
                 wantedMessageNo = input("Entrez le numero du message que vous voulez ouvrir: ")
-                send_msg(self.s, wantedMessageNo)
-                confirmation = recv_msg(self.s)
-                if confirmation == "messageOk":
-                    subject = recv_msg(self.s)
-                    subject, extension = subject.split(".")
-                    message = recv_msg(self.s)
-                    print("\nSujet: " + subject)
-                    print(message)
-                elif confirmation == "noMessage":
-                    print("Entrez un numero de sujet valide")
-                    self.__showMails()
+                if str(length) == wantedMessageNo:
+                    send_msg(self.s, "noConsult")
+                    self.__showMainMenu()
                 else:
-                    print("Erreur niveau serveur")
+                    send_msg(self.s, "consulting")
+                    send_msg(self.s, wantedMessageNo)
+                    confirmation = recv_msg(self.s)
+                    if confirmation == "messageOk":
+                        subject = recv_msg(self.s)
+                        subject, extension = subject.split(".")
+                        message = recv_msg(self.s)
+                        print("\nSujet: " + subject)
+                        print(message)
+                    elif confirmation == "noMessage":
+                        print("Entrez un numero de sujet valide")
+                        self.__showMails()
+                    else:
+                        print("Erreur niveau serveur")
         except Exception as ex:
             print(ex)
 
