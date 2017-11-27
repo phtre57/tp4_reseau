@@ -181,7 +181,7 @@ class Server:
                 filename, extension = filename.split(".")
                 subjectListSent.append(str(str(it) + "." + filename + "\n"))
                 it += 1
-        subjectsString = " ".join(subjectListSent)
+        subjectsString = "".join(subjectListSent)
         if len(subjectList) == 0:
             send_msg(s, "messageEmpty")
         else:
@@ -221,7 +221,7 @@ class Server:
                 filename, extension = filename.split(".")
                 subjectListSent.append(str(str(it) + "." + filename + "\n"))
                 it += 1
-        subjectsString = " ".join(subjectListSent)
+        subjectsString = "".join(subjectListSent)
         send_msg(s, str(len(subjectList)))
         send_msg(s, str(size))
         send_msg(s, subjectsString)

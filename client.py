@@ -18,25 +18,31 @@ class Client:
         self.__showConnexionMenu()
 
     def __showConnexionMenu(self):
-        choice = input("\nMenu de connexion \n 1. Se connecter \n 2. Creer un compte \n")
+        try:
+            choice = input("\nMenu de connexion \n 1. Se connecter \n 2. Creer un compte \n")
 
-        if choice == 1 or choice == str(1):
-            self.__connexionToServer()
+            if choice == 1 or choice == str(1):
+                self.__connexionToServer()
 
-        elif choice == 2 or choice == str(2):
-            self.__createUser()
+            elif choice == 2 or choice == str(2):
+                self.__createUser()
 
-        else:
-            print("Choix invalide")
-            self.__showConnexionMenu()
+            else:
+                print("Choix invalide")
+                self.__showConnexionMenu()
+        except Exception as ex:
+            print(ex)
 
     def __connexionToServer(self):
-        self.username = input("\nEntrez votre nom d'usager: ")
-        self.password = getpass.getpass("Entrez votre mot de passe: ")
+        try:
+            self.username = input("\nEntrez votre nom d'usager: ")
+            self.password = getpass.getpass("Entrez votre mot de passe: ")
 
-        send_msg(self.s, str(1))
-        send_msg(self.s, self.username)
-        send_msg(self.s, self.password)
+            send_msg(self.s, str(1))
+            send_msg(self.s, self.username)
+            send_msg(self.s, self.password)
+        except Exception as ex:
+            print(ex)
 
         try:
             message = recv_msg(self.s)
@@ -60,20 +66,27 @@ class Client:
 
 
     def __createUser(self):
-        self.username = input("\nEntrez le nom d'usager voulu: ")
-        self.__createPassword()
+        try:
+            self.username = input("\nEntrez le nom d'usager voulu: ")
+            self.__createPassword()
+        except Exception as ex:
+            print(ex)
+
 
     def __createPassword(self):
-        self.password = getpass.getpass("Entrez le mot de passe voulu, il doit contenir entre 6 et 12 carateres dont au moins"
-                              "une lettre et un chiffre: ")
+        try:
+            self.password = getpass.getpass("Entrez le mot de passe voulu, il doit contenir entre 6 et 12 carateres dont au moins"
+                                  "une lettre et un chiffre: ")
 
-        if re.search(r"^(?=.*\d)(?=.*[a-zA-Z]).{6,12}$", self.password):
-            send_msg(self.s, str(2))
-            send_msg(self.s, self.username)
-            send_msg(self.s, self.password)
-        else:
-            print("Le mot de passe ne contient pas entre 6-12 caracteres ou au moins une lettre et un chiffre")
-            self.__createPassword()
+            if re.search(r"^(?=.*\d)(?=.*[a-zA-Z]).{6,12}$", self.password):
+                send_msg(self.s, str(2))
+                send_msg(self.s, self.username)
+                send_msg(self.s, self.password)
+            else:
+                print("Le mot de passe ne contient pas entre 6-12 caracteres ou au moins une lettre et un chiffre")
+                self.__createPassword()
+        except Exception as ex:
+            print(ex)
 
         try:
             message = recv_msg(self.s)
@@ -93,37 +106,43 @@ class Client:
 
 
     def __showMainMenu(self):
-        print("\nBienvenue: " + self.username)
-        choice = input("Menu principal \n 1. Envoie de courriel \n 2. Consultation de courriels \n "
-                       "3. Statistiques \n 4. Quitter \n")
+        try:
+            print("\nBienvenue: " + self.username)
+            choice = input("Menu principal \n 1. Envoie de courriel \n 2. Consultation de courriels \n "
+                           "3. Statistiques \n 4. Quitter \n")
 
-        if choice == str(1) or choice == 1:
-            self.__sendMail()
-            self.__showMainMenu()
-        elif choice == str(2) or choice == 2:
-            self.__showMails()
-            self.__showMainMenu()
-        elif choice == str(3) or choice == 3:
-            self.__showStats()
-            self.__showMainMenu()
-        elif choice == str(4) or choice == 4:
-            self.username = ""
-            self.password = ""
-            self.__showConnexionMenu()
-        else:
-            print("Choix invalide")
-            self.__showMainMenu()
+            if choice == str(1) or choice == 1:
+                self.__sendMail()
+                self.__showMainMenu()
+            elif choice == str(2) or choice == 2:
+                self.__showMails()
+                self.__showMainMenu()
+            elif choice == str(3) or choice == 3:
+                self.__showStats()
+                self.__showMainMenu()
+            elif choice == str(4) or choice == 4:
+                self.username = ""
+                self.password = ""
+                self.__showConnexionMenu()
+            else:
+                print("Choix invalide")
+                self.__showMainMenu()
+        except Exception as ex:
+            print(ex)
 
     def __sendMail(self):
-        dest = self.__destOk()
-        subject = input("Entrez le sujet: ")
-        message = input("Entrez le message: ")
+        try:
+            dest = self.__destOk()
+            subject = input("Entrez le sujet: ")
+            message = input("Entrez le message: ")
 
-        send_msg(self.s, str(3))
-        send_msg(self.s, dest)
-        send_msg(self.s, subject)
-        send_msg(self.s, message)
-        send_msg(self.s, self.username + "@reseauglo.ca")
+            send_msg(self.s, str(3))
+            send_msg(self.s, dest)
+            send_msg(self.s, subject)
+            send_msg(self.s, message)
+            send_msg(self.s, self.username + "@reseauglo.ca")
+        except Exception as ex:
+            print(ex)
 
         try:
             message = recv_msg(self.s)
