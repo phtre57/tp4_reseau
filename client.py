@@ -149,21 +149,24 @@ class Client:
         send_msg(self.s, self.username)
         try:
             subjects = recv_msg(self.s)
-            print("\n" + subjects)
-            wantedMessageNo = input("Entrez le numero du message que vous voulez ouvrir: ")
-            send_msg(self.s, wantedMessageNo)
-            confirmation = recv_msg(self.s)
-            if confirmation == "messageOk":
-                subject = recv_msg(self.s)
-                subject, extension = subject.split(".")
-                message = recv_msg(self.s)
-                print("\nSujet: " + subject)
-                print(message)
-            elif confirmation == "noMessage":
-                print("Entrez un numero de sujet valide")
-                self.__showMails()
+            if subjects == "messageEmpty":
+                print("\nAucuns messages recus")
             else:
-                print("Erreur niveau serveur")
+                print("\n" + subjects)
+                wantedMessageNo = input("Entrez le numero du message que vous voulez ouvrir: ")
+                send_msg(self.s, wantedMessageNo)
+                confirmation = recv_msg(self.s)
+                if confirmation == "messageOk":
+                    subject = recv_msg(self.s)
+                    subject, extension = subject.split(".")
+                    message = recv_msg(self.s)
+                    print("\nSujet: " + subject)
+                    print(message)
+                elif confirmation == "noMessage":
+                    print("Entrez un numero de sujet valide")
+                    self.__showMails()
+                else:
+                    print("Erreur niveau serveur")
         except Exception as ex:
             print(ex)
 

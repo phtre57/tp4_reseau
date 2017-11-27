@@ -182,27 +182,29 @@ class Server:
                 subjectListSent.append(str(str(it) + "." + filename + "\n"))
                 it += 1
         subjectsString = " ".join(subjectListSent)
-        send_msg(s, subjectsString)
+        if len(subjectList) == 0:
+            send_msg(s, "messageEmpty")
+        else:
+            send_msg(s, subjectsString)
+            try:
+                wantedMessageNo = recv_msg(s)
+                wantedMessageNo = int(wantedMessageNo) - 1
+                subjectWanted = subjectList[wantedMessageNo]
+                filenameWanted = "./" + username + "/" + subjectWanted
+                if os.path.exists(filenameWanted):
+                    try:
+                        with open(filenameWanted, "r") as file:
+                            message = file.readline()
+                            send_msg(s, "messageOk")
+                            send_msg(s, subjectWanted)
+                            send_msg(s, message)
 
-        try:
-            wantedMessageNo = recv_msg(s)
-            wantedMessageNo = int(wantedMessageNo) - 1
-            subjectWanted = subjectList[wantedMessageNo]
-            filenameWanted = "./" + username + "/" + subjectWanted
-            if os.path.exists(filenameWanted):
-                try:
-                    with open(filenameWanted, "r") as file:
-                        message = file.readline()
-                        send_msg(s, "messageOk")
-                        send_msg(s, subjectWanted)
-                        send_msg(s, message)
+                    except OSError as ex:
+                        if ex.errno != errno.EEXIST:
+                            send_msg(s, "race condition")
 
-                except OSError as ex:
-                    if ex.errno != errno.EEXIST:
-                        send_msg(s, "race condition")
-
-        except Exception as iEx:
-            send_msg(s, "noMessage")
+            except Exception as iEx:
+                send_msg(s, "noMessage")
 
         self.__listen(s)
 
