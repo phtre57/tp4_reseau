@@ -101,10 +101,10 @@ class Client:
             self.__sendMail()
             self.__showMainMenu()
         elif choice == str(2) or choice == 2:
-            print(2)
+            self.__showMails()
             self.__showMainMenu()
         elif choice == str(3) or choice == 3:
-            print(3)
+            self.__showStats()
             self.__showMainMenu()
         elif choice == str(4) or choice == 4:
             self.username = ""
@@ -139,9 +139,42 @@ class Client:
             print("Rentrez un email valide (ex: exemple@gmail.com)")
             self.__destOk()
 
+    def __showMails(self):
+        send_msg(self.s, str(4))
+        send_msg(self.s, self.username)
+        try:
+            subjects = recv_msg(self.s)
+            print(subjects)
+            wantedMessageNo = input("Entrez le numero du message que vous voulez ouvrir: ")
+            send_msg(self.s, wantedMessageNo)
+            confirmation = recv_msg(self.s)
+            if confirmation == "messageOk":
+                subject = recv_msg(self.s)
+                subject, extension = subject.split(".")
+                message = recv_msg(self.s)
+                print("\nSujet: " + subject)
+                print(message + "\n")
+            elif confirmation == "noMessage":
+                print("Entrez un numero de sujet valide")
+            else:
+                print("Erreur niveau serveur")
+        except Exception as ex:
+            print(ex)
 
+    def __showStats(self):
+        send_msg(self.s, str(5))
+        send_msg(self.s, self.username)
 
+        try:
+            nbrMessage = recv_msg(self.s)
+            size = recv_msg(self.s)
+            messageList = recv_msg(self.s)
+            print("\nNombre de message: " + nbrMessage)
+            print("Taille du dossier: " + size)
+            print("Liste de messages:\n" + messageList + "\n")
 
+        except Exception as ex:
+            print("Erreur niveau serveur")
 
 
 newClient = Client()

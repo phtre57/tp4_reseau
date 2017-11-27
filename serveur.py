@@ -51,6 +51,14 @@ class Server:
             elif operation == str(3):
                 self.__sendMail(s)
 
+            #4 show mail
+            elif operation == str(4):
+                self.__showMails(s)
+
+            #5 show stats
+            elif operation == str(5):
+                self.__sendStats(s)
+
         except Exception as ex:
             print(ex)
 
@@ -161,6 +169,62 @@ class Server:
 
         self.__listen(s)
 
+    def __showMails(self, s):
+        username = recv_msg(s)
+        directory = "./" + username
+        subjectListSent = []
+        subjectList = []
+        it = 1
+        for filename in os.listdir(directory):
+            if filename.endswith(".txt") and filename != "config.txt":
+                subjectList.append(filename)
+                filename, extension = filename.split(".")
+                subjectListSent.append(str(str(it) + "." + filename + "\n"))
+                it += 1
+        subjectsString = " ".join(subjectListSent)
+        send_msg(s, subjectsString)
+
+        try:
+            wantedMessageNo = recv_msg(s)
+            wantedMessageNo = int(wantedMessageNo) - 1
+            subjectWanted = subjectList[wantedMessageNo]
+            filenameWanted = "./" + username + "/" + subjectWanted
+            if os.path.exists(filenameWanted):
+                try:
+                    with open(filenameWanted, "r") as file:
+                        message = file.readline()
+                        send_msg(s, "messageOk")
+                        send_msg(s, subjectWanted)
+                        send_msg(s, message)
+
+                except OSError as ex:
+                    if ex.errno != errno.EEXIST:
+                        send_msg(s, "race condition")
+
+        except Exception as iEx:
+            send_msg(s, "noMessage")
+
+        self.__listen(s)
+
+    def __sendStats(self, s):
+        username = recv_msg(s)
+        directory = "./" + username
+        size = os.path.getsize(directory)
+        subjectListSent = []
+        subjectList = []
+        it = 1
+        for filename in os.listdir(directory):
+            if filename.endswith(".txt") and filename != "config.txt":
+                subjectList.append(filename)
+                filename, extension = filename.split(".")
+                subjectListSent.append(str(str(it) + "." + filename + "\n"))
+                it += 1
+        subjectsString = " ".join(subjectListSent)
+        send_msg(s, str(len(subjectList)))
+        send_msg(s, str(size))
+        send_msg(s, subjectsString)
+
+        self.__listen(s)
 
 
 newServer = Server()
