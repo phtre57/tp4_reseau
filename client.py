@@ -19,13 +19,16 @@ class Client:
 
     def __showConnexionMenu(self):
         try:
-            choice = input("\nMenu de connexion \n 1. Se connecter \n 2. Creer un compte \n")
+            choice = input("\nMenu de connexion\n1. Se connecter\n2. Creer un compte\n3. Quitter\n")
 
             if choice == 1 or choice == str(1):
                 self.__connexionToServer()
 
             elif choice == 2 or choice == str(2):
                 self.__createUser()
+
+            elif choice == 3 or choice == str(3):
+                self.s.close()
 
             else:
                 print("Choix invalide")
