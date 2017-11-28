@@ -173,7 +173,7 @@ class Client:
             length = int(recv_msg(self.s)) + 1
             subjects = recv_msg(self.s)
             if subjects == "messageEmpty":
-                print("\nAucuns messages recus")
+                print("\nAucun message recu")
             else:
                 print("\n" + subjects + str(length) + ".Quitter")
                 wantedMessageNo = input("Entrez le numero du message que vous voulez ouvrir: ")
