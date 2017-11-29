@@ -184,7 +184,10 @@ class Server:
         subjectsString = "".join(subjectListSent)
         if len(subjectList) == 0:
             send_msg(s, "messageEmpty")
+            send_msg(s, str(len(subjectList)))
+            send_msg(s, subjectsString)
         else:
+            send_msg(s, "messageNotEmpty")
             send_msg(s, str(len(subjectList)))
             send_msg(s, subjectsString)
             try:

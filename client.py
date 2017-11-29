@@ -170,9 +170,10 @@ class Client:
         send_msg(self.s, str(4))
         send_msg(self.s, self.username)
         try:
+            confirmation = recv_msg(self.s)
             length = int(recv_msg(self.s)) + 1
             subjects = recv_msg(self.s)
-            if subjects == "messageEmpty":
+            if confirmation == "messageEmpty":
                 print("\nAucun message recu")
             else:
                 print("\n" + subjects + str(length) + ".Quitter")
