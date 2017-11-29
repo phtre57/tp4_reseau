@@ -219,7 +219,7 @@ class Server:
     def __sendStats(self, s):
         username = recv_msg(s)
         directory = "./" + username
-        size = os.path.getsize(directory)
+        size = os.path.getsize(os.path.dirname(directory))
         subjectListSent = []
         subjectList = []
         it = 1
