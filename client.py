@@ -59,11 +59,11 @@ class Client:
 
             elif message == "notExistUsername":
                 print("Le nom d'usage rentrer ne correspond a aucun usage")
-                self.__connexionToServer()
+                self.__showConnexionMenu()
 
             else:
                 print("Probleme au niveau du serveur: " + message)
-                self.__connexionToServer()
+                self.__showConnexionMenu()
         except Exception as ex:
             print(ex)
 
