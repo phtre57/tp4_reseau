@@ -4,6 +4,7 @@ from socketUtil import recv_msg, send_msg
 import socket, optparse, sys
 import getpass
 import re
+import time
 
 
 class Client:
@@ -11,11 +12,15 @@ class Client:
     def __init__(self):
         self.username = ""
         self.password = ""
-        self.destination = ("localhost", 1337)
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.connect(self.destination)
-
-        self.__showConnexionMenu()
+        try:
+            self.destination = ("localhost", 1337)
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.s.connect(self.destination)
+            self.__showConnexionMenu()
+        except Exception as ex:
+            print("Connexion au serveur a echoue, reconnexion...")
+            time.sleep(5)
+            newClient = Client()
 
     def __showConnexionMenu(self):
         try:
